@@ -1,0 +1,1732 @@
+{
+  "name": "NovaDX — Agentic AI Multi-Agent Lab Automation System",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "AGENT 1 — Patient Booking and Triage",
+        "height": 80,
+        "width": 182
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2288,
+        192
+      ],
+      "id": "c0e28166-50aa-4ad9-97a2-393710d11db9",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "patient-booking",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -2000,
+        176
+      ],
+      "id": "4174ffc4-b8b1-48fc-acdd-aec78ce02b1b",
+      "name": "Webhook",
+      "webhookId": "515f8b4e-45a4-480e-bc9d-580a7702825c"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1SE-KvEgE9thmz3q7VpNoBJXLT0kAu00wQB1ccMssikg",
+          "mode": "list",
+          "cachedResultName": "Lab OS — Master Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1SE-KvEgE9thmz3q7VpNoBJXLT0kAu00wQB1ccMssikg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 850461440,
+          "mode": "list",
+          "cachedResultName": "Patient Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1SE-KvEgE9thmz3q7VpNoBJXLT0kAu00wQB1ccMssikg/edit#gid=850461440"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Phone Number",
+              "lookupValue": "={{ $json.body.phone }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1792,
+        176
+      ],
+      "id": "4aaa6abc-8959-468c-b7fc-012de88ad06d",
+      "name": "Get row(s) in sheet",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Uur0xPsZOKXKu6aV",
+          "name": "Google Sheets Lab Project"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "05b059a6-e627-4532-b8b7-2faeda0ec284",
+              "leftValue": "={{ $json.candidates[0].content.parts[0].text }}",
+              "rightValue": "TRIAGE: PRIORITY",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1280,
+        176
+      ],
+      "id": "fe4800ff-1f46-45b1-85ec-c27f81623b7c",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "from": "whatsapp:+14155238886",
+        "to": "=whatsapp:+91{{ $('Webhook').item.json.body.phone }}",
+        "message": "={{ $('Message a model1').item.json.candidates[0].content.parts[0].text.split('PATIENT WHATSAPP MESSAGE:')[1]?.split('MANAGER ALERT:')[0]?.trim().substring(0, 1500) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        -1024,
+        32
+      ],
+      "id": "8e757c83-137b-44e4-b14c-cfaf67549bd9",
+      "name": "Send an SMS/MMS/WhatsApp message",
+      "alwaysOutputData": true,
+      "credentials": {
+        "twilioApi": {
+          "id": "7L7UFJT9i4BnAH8A",
+          "name": "Twilio Lab Project"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "from": "whatsapp:+14155238886",
+        "to": "whatsapp:+917892666431",
+        "message": "={{ $('Message a model1').item.json.candidates[0].content.parts[0].text.split('MANAGER ALERT:\\n')[1]?.trim().substring(0, 1500) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        -816,
+        32
+      ],
+      "id": "38e3e473-6dba-4218-bdcf-e0ba78e74f4e",
+      "name": "Send an SMS/MMS/WhatsApp message1",
+      "credentials": {
+        "twilioApi": {
+          "id": "7L7UFJT9i4BnAH8A",
+          "name": "Twilio Lab Project"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "from": "whatsapp:+14155238886",
+        "to": "=whatsapp:+91{{ $('Webhook').item.json.body.phone }}",
+        "message": "={{ $('Message a model1').item.json.candidates[0].content.parts[0].text.split('PATIENT WHATSAPP MESSAGE:')[1]?.trim().substring(0, 1500) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        -928,
+        256
+      ],
+      "id": "35b1e09a-1603-43e7-9ff0-08f250579354",
+      "name": "Send an SMS/MMS/WhatsApp message2",
+      "credentials": {
+        "twilioApi": {
+          "id": "7L7UFJT9i4BnAH8A",
+          "name": "Twilio Lab Project"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1SE-KvEgE9thmz3q7VpNoBJXLT0kAu00wQB1ccMssikg",
+          "mode": "list",
+          "cachedResultName": "Lab OS — Master Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1SE-KvEgE9thmz3q7VpNoBJXLT0kAu00wQB1ccMssikg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 36696785,
+          "mode": "list",
+          "cachedResultName": "Bookings Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1SE-KvEgE9thmz3q7VpNoBJXLT0kAu00wQB1ccMssikg/edit#gid=36696785"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Booking ID": "=BOOK-{{ new Date().getTime() }}",
+            "Patient Name": "={{ $('Webhook').item.json.body.full_name }}",
+            "Phone": "={{ $('Webhook').item.json.body.phone }}",
+            "Tests Requested": "={{ $('Webhook').item.json.body.tests }}",
+            "Preferred Date": "={{ $('Webhook').item.json.body.date }}",
+            "Collection Type": "={{ $('Webhook').item.json.body.collection }}",
+            "Triage Level": "={{ $('Message a model1').item.json.candidates[0].content.parts[0].text.includes('PRIORITY') ? 'PRIORITY' : 'STANDARD' }}",
+            "Status": "Booked",
+            "Timestamp": "={{ new Date().toISOString() }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Booking ID",
+              "displayName": "Booking ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Patient Name",
+              "displayName": "Patient Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Tests Requested",
+              "displayName": "Tests Requested",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Preferred Date",
+              "displayName": "Preferred Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Collection Type",
+              "displayName": "Collection Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Triage Level",
+              "displayName": "Triage Level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -512,
+        128
+      ],
+      "id": "ff18c0c6-2cee-484b-9726-3937a91c85c2",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Uur0xPsZOKXKu6aV",
+          "name": "Google Sheets Lab Project"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an intelligent patient triage assistant for NovaDx Diagnostics, a diagnostic laboratory in India. Analyse the patient booking and their medical history below and make a precise triage decision.\n\nPATIENT BOOKING:\nFull Name: {{ $('Webhook').item.json.body.full_name }}\nPhone: {{ $('Webhook').item.json.body.phone }}\nTests Requested: {{ $('Webhook').item.json.body.tests }}\nPreferred Date: {{ $('Webhook').item.json.body.date }}\nCollection Type: {{ $('Webhook').item.json.body.collection }}\n\nPATIENT HISTORY FROM DATABASE:\nPrevious Visits: {{ $('Get row(s) in sheet').item.json['Total Visit Count'] ?? 'New Patient' }}\nLast Test Done: {{ $('Get row(s) in sheet').item.json['Last Test Name'] ?? 'No previous tests on record' }}\nLast Result Values: {{ $('Get row(s) in sheet').item.json['Last Result Values'] ?? 'No previous results on record' }}\nFlagged Medical Conditions: {{ $('Get row(s) in sheet').item.json['Flagged Conditions'] ?? 'None' }}\n\nSTEP 1 — TRIAGE DECISION:\nWrite exactly one of these on the very first line of your response:\nTRIAGE: STANDARD\nTRIAGE: PRIORITY\nTRIAGE: PRE-CONSULT\nSTANDARD means routine test with no concerning history or new patient with no history.\nPRIORITY means repeat of a previously abnormal test or high-risk condition such as pre-diabetic monitoring, cardiac enzyme testing, or critical drug level monitoring.\nPRE-CONSULT means the test pattern suggests the patient needs a doctor's written order before testing.\nAfter the triage decision on the first line, write one sentence explaining your reason.\n\nSTEP 2 — PREPARATION INSTRUCTIONS:\nList the exact preparation the patient must follow for their specific tests. Include fasting duration, medication instructions, hydration requirements, timing requirements. Be specific to their tests, not generic.\n\nSTEP 3 — PATIENT WHATSAPP MESSAGE under 150 words:\nWarm professional WhatsApp confirmation. Include patient name, tests confirmed, date, collection type, exact preparation instructions. If PRIORITY mention a senior technician has been specially assigned. End with NovaDx Diagnostics and contact 98XXXXXXXX.\n\nSTEP 4 — MANAGER ALERT under 50 words:\nOnly write this section if triage is PRIORITY or PRE-CONSULT. Brief internal alert for lab manager. Patient name, test, triage reason, recommended action.\n\nRULES:\nNever use medical jargon in patient messages.\nNever diagnose or interpret results.\nAlways be warm and professional.\nIf patient is new with no history, treat as STANDARD unless the tests themselves are high-risk."
+            }
+          ]
+        },
+        "simplify": false,
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -1600,
+        176
+      ],
+      "id": "af12e0e9-f464-4428-8a45-89f03ba79694",
+      "name": "Message a model1",
+      "retryOnFail": true,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "vsNqlctfa8td6QG7",
+          "name": "Gemini Lab Project"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1SE-KvEgE9thmz3q7VpNoBJXLT0kAu00wQB1ccMssikg",
+          "mode": "list",
+          "cachedResultName": "Lab OS — Master Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1SE-KvEgE9thmz3q7VpNoBJXLT0kAu00wQB1ccMssikg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 850461440,
+          "mode": "list",
+          "cachedResultName": "Patient Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1SE-KvEgE9thmz3q7VpNoBJXLT0kAu00wQB1ccMssikg/edit#gid=850461440"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Full Name": "={{ $('Webhook').item.json.body.full_name }}",
+            "Phone Number": "={{ $('Webhook').item.json.body.phone }}",
+            "Total Visit Count": "1",
+            "Flagged Conditions": "None",
+            "Age": "={{ $('Webhook').item.json.body.age }}",
+            "Gender": "={{ $('Webhook').item.json.body.gender }}",
+            "Last Test Name": "={{ $('Webhook').item.json.body.tests }}",
+            "Last Test Date": "={{ $('Webhook').item.json.body.date }}",
+            "Last Result Values": "Pending"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Patient ID",
+              "displayName": "Patient ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone Number",
+              "displayName": "Phone Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Age",
+              "displayName": "Age",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Gender",
+              "displayName": "Gender",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Last Test Name",
+              "displayName": "Last Test Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Last Test Date",
+              "displayName": "Last Test Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Last Result Values",
+              "displayName": "Last Result Values",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Flagged Conditions",
+              "displayName": "Flagged Conditions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Total Visit Count",
+              "displayName": "Total Visit Count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        0,
+        0
+      ],
+      "id": "2aaf2c51-0bfe-4b54-8f00-35ef5000790b",
+      "name": "Append row in sheet2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Uur0xPsZOKXKu6aV",
+          "name": "Google Sheets Lab Project"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "879cb4e3-6376-4ca3-be5e-23070396e687",
+              "leftValue": "={{ $('Get row(s) in sheet').item.json.row_number }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -272,
+        128
+      ],
+      "id": "9e83a828-c280-4229-897e-75b1bffd96f4",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1SE-KvEgE9thmz3q7VpNoBJXLT0kAu00wQB1ccMssikg",
+          "mode": "list",
+          "cachedResultName": "Lab OS — Master Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1SE-KvEgE9thmz3q7VpNoBJXLT0kAu00wQB1ccMssikg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 850461440,
+          "mode": "list",
+          "cachedResultName": "Patient Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1SE-KvEgE9thmz3q7VpNoBJXLT0kAu00wQB1ccMssikg/edit#gid=850461440"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Full Name": "={{ $('Webhook').item.json.body.full_name }}",
+            "Phone Number": "={{ $('Webhook').item.json.body.phone }}",
+            "Last Test Name": "={{ $('Webhook').item.json.body.tests }}",
+            "Total Visit Count": "={{ parseInt($('Get row(s) in sheet').item.json['Total Visit Count']) + 1 }}",
+            "Last Test Date": "={{ $('Webhook').item.json.body.date }}"
+          },
+          "matchingColumns": [
+            "Phone Number"
+          ],
+          "schema": [
+            {
+              "id": "Patient ID",
+              "displayName": "Patient ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone Number",
+              "displayName": "Phone Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Age",
+              "displayName": "Age",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Gender",
+              "displayName": "Gender",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Last Test Name",
+              "displayName": "Last Test Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Last Test Date",
+              "displayName": "Last Test Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Last Result Values",
+              "displayName": "Last Result Values",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Flagged Conditions",
+              "displayName": "Flagged Conditions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Total Visit Count",
+              "displayName": "Total Visit Count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        32,
+        288
+      ],
+      "id": "8128d675-fbfc-40ff-a2b0-09aec4df60fd",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Uur0xPsZOKXKu6aV",
+          "name": "Google Sheets Lab Project"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "report-ready",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -2032,
+        784
+      ],
+      "id": "3a34bcf5-64e8-450d-818e-8a1a71531101",
+      "name": "Webhook1",
+      "webhookId": "1948d9a1-51d9-4755-bb8c-a2dcb22b1422"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.1-flash-lite",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.1-flash-lite"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an expert medical lab result interpreter for NovaDx Diagnostics. Analyse the patient's test results and classify severity.\n\nPATIENT DETAILS:\nName: {{ $json.body.patient_name }}\nAge: {{ $json.body.patient_age }}\nGender: {{ $json.body.patient_gender }}\nReport ID: {{ $json.body.report_id }}\nDoctor: {{ $json.body.doctor_name }}\n\nCURRENT TEST VALUES:\nHaemoglobin: {{ $json.body.haemoglobin }} g/dL\nWBC: {{ $json.body.wbc }} /µL\nPlatelets: {{ $json.body.platelets }} /µL\nFasting Blood Sugar: {{ $json.body.fasting_blood_sugar }} mg/dL\n\nPREVIOUS TEST VALUES:\nPrevious Haemoglobin: {{ $json.body.previous_haemoglobin }} g/dL\n\nSTEP 1 — SEVERITY CLASSIFICATION:\nWrite exactly one of these on the very first line:\nSEVERITY: CRITICAL\nSEVERITY: BORDERLINE\nSEVERITY: NORMAL\nCRITICAL means one or more values are dangerously abnormal and require immediate attention.\nBORDERLINE means values are outside normal range but not immediately dangerous.\nNORMAL means all values are within acceptable range.\nAfter the severity line, write one sentence explaining your reasoning considering the patient's age, gender and previous values.\n\nSTEP 2 — PATIENT WHATSAPP MESSAGE under 120 words:\nWarm non-alarming message. Tell patient their report is ready. If CRITICAL or BORDERLINE advise them to contact their doctor. Never mention specific values or use medical jargon. End with NovaDx Diagnostics and 98XXXXXXXX.\n\nSTEP 3 — DOCTOR ALERT under 100 words:\nClinical summary for the doctor. Include patient name, age, gender, specific abnormal values, comparison with previous values, and recommended action.\n\nSTEP 4 — MANAGER ALERT under 60 words:\nOnly write this if CRITICAL. Brief internal alert. Patient name, critical values, action required. No bold text, no asterisks, no markdown formatting. Plain sentences only.\n\nRULES:\nNever diagnose. Never alarm the patient directly.\nAlways consider age and gender context when classifying severity.\nDo not use any markdown formatting like ** or ## anywhere in your response.\nWrite SEVERITY: CRITICAL or SEVERITY: BORDERLINE or SEVERITY: NORMAL exactly as shown — no bold, no asterisks."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -1824,
+        784
+      ],
+      "id": "de8fad5c-ce2a-4b65-9419-bd5c05dd6b8c",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "vsNqlctfa8td6QG7",
+          "name": "Gemini Lab Project"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Message a model').item.json.content.parts[0].text }}",
+                    "rightValue": "SEVERITY: CRITICAL",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "5ad06ca4-2101-438c-a0f5-82e38b74d066"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "8c422864-48da-4776-90a1-f8c0b6c4b3c1",
+                    "leftValue": "={{ $('Message a model').item.json.content.parts[0].text }}",
+                    "rightValue": "SEVERITY: BORDERLINE",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -1472,
+        768
+      ],
+      "id": "c0a923bc-887e-4814-bdba-20be532c7779",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "from": "+14155238886",
+        "to": "=+91{{ $('Webhook1').item.json.body.patient_phone }}",
+        "toWhatsapp": true,
+        "message": "={{ $('Message a model').item.json.content.parts[0].text.split('PATIENT WHATSAPP MESSAGE\\n')[1].split('\\n\\nDOCTOR ALERT')[0].trim() }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        -1056,
+        608
+      ],
+      "id": "d32df1f4-009e-49c8-92fd-d4c3f8e483f5",
+      "name": "Send an SMS/MMS/WhatsApp message3",
+      "credentials": {
+        "twilioApi": {
+          "id": "7L7UFJT9i4BnAH8A",
+          "name": "Twilio Lab Project"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "from": "+14155238886",
+        "to": "=+91{{ $('Webhook1').item.json.body.doctor_phone }}",
+        "toWhatsapp": true,
+        "message": "={{ $('Message a model').item.json.content.parts[0].text.split('DOCTOR ALERT\\n')[1].split('\\n\\nMANAGER ALERT')[0].trim() }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        -784,
+        592
+      ],
+      "id": "30677922-85c2-42ef-a72e-045d2db4530e",
+      "name": "Send an SMS/MMS/WhatsApp message4",
+      "credentials": {
+        "twilioApi": {
+          "id": "7L7UFJT9i4BnAH8A",
+          "name": "Twilio Lab Project"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "from": "+14155238886",
+        "to": "+918618055030",
+        "toWhatsapp": true,
+        "message": "={{ $('Message a model').item.json.content.parts[0].text.split('MANAGER ALERT\\n')[1].trim() }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        -528,
+        592
+      ],
+      "id": "13498a2f-8dff-4274-ae85-0cd21bae9cb3",
+      "name": "Send an SMS/MMS/WhatsApp message5",
+      "credentials": {
+        "twilioApi": {
+          "id": "7L7UFJT9i4BnAH8A",
+          "name": "Twilio Lab Project"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "from": "+14155238886",
+        "to": "=+91{{ $('Webhook1').item.json.body.patient_phone }}",
+        "toWhatsapp": true,
+        "message": "={{ $('Message a model').item.json.content.parts[0].text.split('**Doctor Alert')[0].trim() }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        -928,
+        816
+      ],
+      "id": "c8421169-db9d-45cd-9fd9-5385aa9a9796",
+      "name": "Send an SMS/MMS/WhatsApp message6"
+    },
+    {
+      "parameters": {
+        "from": "+14155238886",
+        "to": "=+91{{ $('Webhook1').item.json.body.doctor_phone }}",
+        "toWhatsapp": true,
+        "message": "={{ $('Message a model').item.json.content.parts[0].text.split('**Doctor Alert')[1].split('**Manager Alert')[0].trim() }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        816
+      ],
+      "id": "dc255fec-c397-432d-bb68-fd6bcc743ef2",
+      "name": "Send an SMS/MMS/WhatsApp message7"
+    },
+    {
+      "parameters": {
+        "from": "+14155238886",
+        "to": "=+91{{ $('Webhook1').item.json.body.patient_phone }}",
+        "toWhatsapp": true,
+        "message": "={{ $('Message a model').item.json.content.parts[0].text.split('**Doctor Alert')[0].trim() }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        -672,
+        1072
+      ],
+      "id": "c795a1cc-ff3d-4f82-a61a-38124df28b5f",
+      "name": "Send an SMS/MMS/WhatsApp message8",
+      "credentials": {
+        "twilioApi": {
+          "id": "7L7UFJT9i4BnAH8A",
+          "name": "Twilio Lab Project"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -304,
+        592
+      ],
+      "id": "6a9ff71a-81b4-4f44-8d5c-a5a87d17981a",
+      "name": "Wait",
+      "webhookId": "5edc2595-46e2-4d6a-b733-35d75022aaea"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1SE-KvEgE9thmz3q7VpNoBJXLT0kAu00wQB1ccMssikg",
+          "mode": "list",
+          "cachedResultName": "Lab OS — Master Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1SE-KvEgE9thmz3q7VpNoBJXLT0kAu00wQB1ccMssikg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1011303663,
+          "mode": "list",
+          "cachedResultName": "Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1SE-KvEgE9thmz3q7VpNoBJXLT0kAu00wQB1ccMssikg/edit#gid=1011303663"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Report ID": "={{ $('Webhook1').item.json.body.report_id }}",
+            "Severity": "={{ $('Message a model').item.json.content.parts[0].text.includes('SEVERITY: CRITICAL') ? 'CRITICAL' : ($('Message a model').item.json.content.parts[0].text.includes('SEVERITY: BORDERLINE') ? 'BORDERLINE' : 'NORMAL') }}",
+            "Timestamp": "={{ new Date().toISOString() }}",
+            "Delivery Confirmed": "Sent"
+          },
+          "matchingColumns": [
+            "Report ID"
+          ],
+          "schema": [
+            {
+              "id": "Report ID",
+              "displayName": "Report ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Patient Name",
+              "displayName": "Patient Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Patient Phone",
+              "displayName": "Patient Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Patient Age",
+              "displayName": "Patient Age",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Patient Gender",
+              "displayName": "Patient Gender",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Doctor Name",
+              "displayName": "Doctor Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Doctor Phone",
+              "displayName": "Doctor Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Test Values",
+              "displayName": "Test Values",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Previous Values",
+              "displayName": "Previous Values",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Report Status",
+              "displayName": "Report Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Severity",
+              "displayName": "Severity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Delivery Confirmed",
+              "displayName": "Delivery Confirmed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -112,
+        592
+      ],
+      "id": "6968e52f-49bb-450a-a531-bcb439a9a004",
+      "name": "Update row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Uur0xPsZOKXKu6aV",
+          "name": "Google Sheets Lab Project"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1SE-KvEgE9thmz3q7VpNoBJXLT0kAu00wQB1ccMssikg",
+          "mode": "list",
+          "cachedResultName": "Lab OS — Master Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1SE-KvEgE9thmz3q7VpNoBJXLT0kAu00wQB1ccMssikg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1011303663,
+          "mode": "list",
+          "cachedResultName": "Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1SE-KvEgE9thmz3q7VpNoBJXLT0kAu00wQB1ccMssikg/edit#gid=1011303663"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Report ID": "={{ $('Webhook1').item.json.body.report_id }}",
+            "Delivery Confirmed": "Sent",
+            "Timestamp": "={{ new Date().toISOString() }}",
+            "Severity": "={{ $('Message a model').item.json.content.parts[0].text.includes('SEVERITY: CRITICAL') ? 'CRITICAL' : ($('Message a model').item.json.content.parts[0].text.includes('SEVERITY: BORDERLINE') ? 'BORDERLINE' : 'NORMAL') }}"
+          },
+          "matchingColumns": [
+            "Report ID"
+          ],
+          "schema": [
+            {
+              "id": "Report ID",
+              "displayName": "Report ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Patient Name",
+              "displayName": "Patient Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Patient Phone",
+              "displayName": "Patient Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Patient Age",
+              "displayName": "Patient Age",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Patient Gender",
+              "displayName": "Patient Gender",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Doctor Name",
+              "displayName": "Doctor Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Doctor Phone",
+              "displayName": "Doctor Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Test Values",
+              "displayName": "Test Values",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Previous Values",
+              "displayName": "Previous Values",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Report Status",
+              "displayName": "Report Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Severity",
+              "displayName": "Severity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Delivery Confirmed",
+              "displayName": "Delivery Confirmed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -464,
+        816
+      ],
+      "id": "2f017de0-3985-42ea-9569-529b50faf423",
+      "name": "Update row in sheet2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Uur0xPsZOKXKu6aV",
+          "name": "Google Sheets Lab Project"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1SE-KvEgE9thmz3q7VpNoBJXLT0kAu00wQB1ccMssikg",
+          "mode": "list",
+          "cachedResultName": "Lab OS — Master Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1SE-KvEgE9thmz3q7VpNoBJXLT0kAu00wQB1ccMssikg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1011303663,
+          "mode": "list",
+          "cachedResultName": "Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1SE-KvEgE9thmz3q7VpNoBJXLT0kAu00wQB1ccMssikg/edit#gid=1011303663"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Severity": "={{ $('Message a model').item.json.content.parts[0].text.includes('SEVERITY: CRITICAL') ? 'CRITICAL' : ($('Message a model').item.json.content.parts[0].text.includes('SEVERITY: BORDERLINE') ? 'BORDERLINE' : 'NORMAL') }}",
+            "Delivery Confirmed": "Sent",
+            "Report ID": "={{ $('Webhook1').item.json.body.report_id }}",
+            "Timestamp": "={{ new Date().toISOString() }}"
+          },
+          "matchingColumns": [
+            "Report ID"
+          ],
+          "schema": [
+            {
+              "id": "Report ID",
+              "displayName": "Report ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Patient Name",
+              "displayName": "Patient Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Patient Phone",
+              "displayName": "Patient Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Patient Age",
+              "displayName": "Patient Age",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Patient Gender",
+              "displayName": "Patient Gender",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Doctor Name",
+              "displayName": "Doctor Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Doctor Phone",
+              "displayName": "Doctor Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Test Values",
+              "displayName": "Test Values",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Previous Values",
+              "displayName": "Previous Values",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Report Status",
+              "displayName": "Report Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Severity",
+              "displayName": "Severity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Delivery Confirmed",
+              "displayName": "Delivery Confirmed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -448,
+        1072
+      ],
+      "id": "03556460-9f11-4335-b3ba-b456da1c725d",
+      "name": "Update row in sheet3",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Uur0xPsZOKXKu6aV",
+          "name": "Google Sheets Lab Project"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "AGENT 2 -- ABNORMAL VALUE ALERT AND ESCALATION\n",
+        "height": 80,
+        "width": 256
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2336,
+        784
+      ],
+      "id": "4e6bdb22-1e7b-466d-8eeb-284b2e2f1126",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Message a model1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send an SMS/MMS/WhatsApp message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send an SMS/MMS/WhatsApp message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send an SMS/MMS/WhatsApp message": {
+      "main": [
+        [
+          {
+            "node": "Send an SMS/MMS/WhatsApp message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send an SMS/MMS/WhatsApp message1": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send an SMS/MMS/WhatsApp message2": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Send an SMS/MMS/WhatsApp message3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send an SMS/MMS/WhatsApp message6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send an SMS/MMS/WhatsApp message8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send an SMS/MMS/WhatsApp message3": {
+      "main": [
+        [
+          {
+            "node": "Send an SMS/MMS/WhatsApp message4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send an SMS/MMS/WhatsApp message4": {
+      "main": [
+        [
+          {
+            "node": "Send an SMS/MMS/WhatsApp message5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send an SMS/MMS/WhatsApp message6": {
+      "main": [
+        [
+          {
+            "node": "Send an SMS/MMS/WhatsApp message7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send an SMS/MMS/WhatsApp message5": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send an SMS/MMS/WhatsApp message7": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send an SMS/MMS/WhatsApp message8": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "36f89a6b-cbce-4b6b-9463-e69934919d68",
+  "meta": {
+    "instanceId": "3fdb61e7c3b2b53af4a0dea1be9c17b02bf0c392c2a5f83303e87e7cb37dcbe0"
+  },
+  "id": "NEwvX4Cv3YDWJ8lj",
+  "tags": []
+}
